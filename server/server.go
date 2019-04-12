@@ -41,23 +41,16 @@ func (s server) Max(srv pb.Find_MaxServer) error {
 			log.Printf("receive error %v", err)
 			continue
 		}
-		log.Println(string(req.Key))
 
 		PEMBlock, _ := pem.Decode(req.Key)
 		if PEMBlock == nil {
 			log.Fatal("Could not parse Private Key PEM")
 		}
-		log.Printf("publicKey %v", PEMBlock.Bytes)
 
 		hashed := sha256.Sum256([]byte(string(req.Num)))
 
 		var pk rsa.PublicKey
 		asn1.Unmarshal(PEMBlock.Bytes, &pk)
-
-		// pubkey, err := x509.ParsePKIXPublicKey(req.Key)
-		// if err != nil {
-		// 	log.Println(err)
-		// }
 
 		err = rsa.VerifyPKCS1v15(&pk, crypto.SHA256, hashed[:], req.SignedData)
 		if err != nil {
