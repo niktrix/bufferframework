@@ -1,0 +1,18 @@
+
+syntax = "proto3";
+
+package protobuf;
+
+service Find {
+    rpc Max (stream Req) returns (stream Res) {}
+}
+
+message Req {
+    int32 num = 1;
+    bytes key = 2;
+    bytes signedData = 3;
+}
+
+message Res {
+    int32 result = 1;
+}
